@@ -1,20 +1,39 @@
-import java.util.*;
-class BankValidation {
+class BankValidate{
     // Data member
     long cardNumber;
 
     // Parameterized constructor
-    public BankValidation(long cardNumber) {
+    public BankValidate(long cardNumber) {
         this.cardNumber = cardNumber;
-        System.out.println("So Your Card Number is: " + this.cardNumber);
-        int count = countCardNumber(this.cardNumber);  // Count using long
-       // System.out.println("The count of the digit is " + count);
-        boolean validationB = validation(count); // Validate using int count
+        System.out.println("Card Number: " + this.cardNumber);
+        int count = countCardNumber(this.cardNumber);
+        System.out.println("The count of the digit is " + count);
+        boolean validationB = validation(count);
 
         if (validationB) {
-           // System.out.println("The card is valid.");
+            System.out.println("The card is valid.");
             if (calculationStuff(this.cardNumber, count)) {
-                System.out.println("--Card is Valid.--");
+                System.out.println("Card is Valid.");
+            } else {
+                System.out.println("---CARD IS INVALID---");
+            }
+        } else {
+            System.out.println("The card is invalid, Bro!!!");
+        }
+    }
+
+    // Overloaded constructor that accepts String type for card number
+    public BankValidate(String cardNumberStr) {
+        this.cardNumber = Long.parseLong(cardNumberStr); // Convert to long
+        System.out.println("Card Number: " + this.cardNumber);
+        int count = countCardNumber(this.cardNumber);
+        System.out.println("The count of the digit is " + count);
+        boolean validationB = validation(count);
+
+        if (validationB) {
+            System.out.println("The card is valid.");
+            if (calculationStuff(this.cardNumber, count)) {
+                System.out.println("Card is Valid.");
             } else {
                 System.out.println("---CARD IS INVALID---");
             }
@@ -38,19 +57,8 @@ class BankValidation {
         return cardNumberStr.length(); // Simply return the length of the string
     }
 
-    // Overloaded method to count digits using an integer
-    public int countCardNumber(int cardNumberInt) {
-        return String.valueOf(cardNumberInt).length(); // Count digits by converting to String
-    }
-
-    // Card Validation based on int count
+    // Card Validation
     public boolean validation(int count) {
-        return count >= 8 && count <= 9;
-    }
-
-    // Overloaded validation method to accept a String
-    public boolean validation(String cardNumberStr) {
-        int count = cardNumberStr.length();
         return count >= 8 && count <= 9;
     }
 
@@ -107,7 +115,7 @@ class BankValidation {
         return resultDouble;
     }
 
-    private boolean calculationStuff(long cardNumber, int count) {
+ /*  private boolean calculationStuff(long cardNumber, int count) {
         // Step a: Remove the last digit of the `ccNumber`.
         int lastDigit = (int) (cardNumber % 10);
         long remDigit = cardNumber / 10;
@@ -122,17 +130,58 @@ class BankValidation {
         // Step f: Compare the result of step e with the last digit obtained in step a.
         // If they match, the card number is valid; otherwise, it is invalid.
         return subtractAns == lastDigit;
-    }
+    }*/
+ private boolean calculationStuff(long cardNumber, int count) {
+     int lastDigit = (int) (cardNumber % 10);
+     long remDigit = cardNumber / 10;
+
+
+     long numRev = 0;
+     long doubleNum = 0;
+     int finalSum = 0;
+     int subtractAns = 0;
+
+     // Perform operations based on step
+     for (int step = 1; step <= 6; step++) {
+         switch (step) {
+             case 1: // Step a
+                 // Already handled: lastDigit and remDigit
+                 break;
+
+             case 2: // Step b: Reverse the remaining digits.
+                 numRev = reverseDigit(remDigit);
+                 break;
+
+             case 3: // Step c: Double at odd number, followed by sum if digit > 9
+                 doubleNum = digitDouble(numRev, count - 1);
+                 break;
+
+             case 4: // Step d: Add up all the digits.
+                 finalSum = (int) summation(doubleNum);
+                 break;
+
+             case 5: // Step e: Subtract the last digit obtained in step a from 10.
+                 subtractAns = 10 - (finalSum % 10);
+                 break;
+
+             case 6: // Step f: Compare the result of step e with the last digit obtained in step a.
+                 return subtractAns == lastDigit;
+         }
+     }
+
+     return false; // Fallback return if not valid
+ }
+
 }
 
-public class Lab_1 {
+public class Lab_1Conover {
     public static void main(String[] args) {
         // Using the long constructor
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter Your Credit Card Number: ");
-        long cardNumberStr = sc.nextLong();
-        BankValidation obj1 = new BankValidation(cardNumberStr);
-       // System.out.println("Count from long: " + obj1.countCardNumber(cardNumberStr));
-       // System.out.println("Count from String: " + obj1.countCardNumber("12345678"));
+        BankValidate obj1 = new BankValidate(121320052L);
+        System.out.println("Count from long: " + obj1.countCardNumber(121320052L));
+
+        // Using the String constructor
+        BankValidate obj2 = new BankValidate("132145679");
+        System.out.println("Count from String: " + obj2.countCardNumber("121320052"));
     }
 }
